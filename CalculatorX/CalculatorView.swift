@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CalculatorView.swift
 //  CalculatorX
 //
 //  Created by zijie vv on 2020-07-08.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct CalculatorView: View {
   var body: some View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
@@ -27,12 +27,12 @@ struct ContentView: View {
   }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct CalculatorView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      ContentView()
-      ContentView().previewDevice("iPhone SE (1st generation)")
-      ContentView().previewDevice("iPhone 7 Plus")
+      CalculatorView()
+      CalculatorView().previewDevice("iPhone SE (1st generation)")
+      CalculatorView().previewDevice("iPhone 7 Plus")
     }
   }
 }
