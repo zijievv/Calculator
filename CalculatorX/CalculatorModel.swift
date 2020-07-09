@@ -16,7 +16,7 @@ class CalculatorModel: ObservableObject {
   var temporaryKept: [CalculatorButtonItem] = []
   
   var historyDetail: String {
-    history.map { $0.description }.joined()
+    history.map { $0.description }.joined(separator: " ")
   }
   
   var totalCount: Int {

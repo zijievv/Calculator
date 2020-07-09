@@ -10,6 +10,7 @@ import SwiftUI
 
 struct CalculatorView: View {
   @ObservedObject var model = CalculatorModel()
+  @State private var editingHistory = false
   
   var body: some View {
     GeometryReader { geometry in
@@ -17,7 +18,10 @@ struct CalculatorView: View {
         Spacer()
         
         Button("History: \(self.model.history.count)") {
-          print(self.model.history)
+          self.editingHistory = true
+        }
+        .sheet(isPresented: self.$editingHistory) {
+          HistoryView(model: self.model)
         }
         
         Text(self.model.brain.output)
@@ -40,14 +44,14 @@ struct CalculatorView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
       CalculatorView()
-      CalculatorView().previewDevice("iPhone SE (1st generation)")
-      CalculatorView().previewDevice("iPhone 7 Plus")
+      //      CalculatorView().previewDevice("iPhone SE (1st generation)")
+      //      CalculatorView().previewDevice("iPhone 7 Plus")
     }
   }
 }
 
 struct CalculatorButtonPad: View {
-//  @Binding var brain: CalculatorBrain
+  //  @Binding var brain: CalculatorBrain
   var model: CalculatorModel
   let pad: [[CalculatorButtonItem]] = [
     [.command(.clear), .command(.flip), .command(.percent), .op(.divide)],
@@ -68,7 +72,7 @@ struct CalculatorButtonPad: View {
 }
 
 struct CalculatorButtonRow: View {
-//  @Binding var brain: CalculatorBrain
+  //  @Binding var brain: CalculatorBrain
   var model: CalculatorModel
   let row: [CalculatorButtonItem]
   let size: CGSize
@@ -80,7 +84,7 @@ struct CalculatorButtonRow: View {
           title: item.title,
           size: self.size,
           backgroundColorName: item.backgroundColorName) {
-//            self.brain = self.brain.apply(item: item)
+            //            self.brain = self.brain.apply(item: item)
             self.model.apply(item)
             print("Button \(item.title)")
         }
