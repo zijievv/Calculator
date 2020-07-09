@@ -9,15 +9,18 @@
 import SwiftUI
 
 struct CalculatorView: View {
+  @State private var brain: CalculatorBrain = .left("0")
+  
   var body: some View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         Spacer()
-        Text("0")
+        Text(self.brain.output)
           .font(.system(size: geometry.size.width * 0.85 / 4))
           .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
           .padding(.horizontal)
         CalculatorButtonPad(
+          brain: self.$brain,
           size: CGSize(width: geometry.size.width * 0.85 / 4,
                        height: geometry.size.width * 0.85 / 4)
         )
@@ -38,6 +41,7 @@ struct CalculatorView_Previews: PreviewProvider {
 }
 
 struct CalculatorButtonPad: View {
+  @Binding var brain: CalculatorBrain
   let pad: [[CalculatorButtonItem]] = [
     [.command(.clear), .command(.flip), .command(.percent), .op(.divide)],
     [.digit(7), .digit(8), .digit(9), .op(.multiply)],
@@ -50,13 +54,14 @@ struct CalculatorButtonPad: View {
   var body: some View {
     VStack(alignment: .trailing) {
       ForEach(pad, id: \.self) { row in
-        CalculatorButtonRow(row: row, size: self.size)
+        CalculatorButtonRow(brain: self.$brain, row: row, size: self.size)
       }
     }
   }
 }
 
 struct CalculatorButtonRow: View {
+  @Binding var brain: CalculatorBrain
   let row: [CalculatorButtonItem]
   let size: CGSize
   
@@ -67,6 +72,7 @@ struct CalculatorButtonRow: View {
           title: item.title,
           size: self.size,
           backgroundColorName: item.backgroundColorName) {
+            self.brain = self.brain.apply(item: item)
             print("Button \(item.title)")
         }
       }
@@ -81,10 +87,7 @@ struct CalculatorButton: View {
   let action: () -> Void
   
   var body: some View {
-    Button(action: {
-      print("Button \(self.title)")
-      print(self.size)
-    }) {
+    Button(action: action) {
       ZStack {
         RoundedRectangle(cornerRadius: size.width / 2, style: .circular)
           .frame(width: title != "0" ? size.width : size.width * 2.1, height: size.height)
