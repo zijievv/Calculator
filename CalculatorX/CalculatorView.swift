@@ -15,12 +15,18 @@ struct CalculatorView: View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         Spacer()
+        
+        Button("History: \(self.model.history.count)") {
+          print(self.model.history)
+        }
+        
         Text(self.model.brain.output)
           .font(.system(size: geometry.size.width * 0.85 / 4))
           .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
           .padding(.horizontal)
+        
         CalculatorButtonPad(
-          brain: self.$model.brain,
+          model: self.model,
           size: CGSize(width: geometry.size.width * 0.85 / 4,
                        height: geometry.size.width * 0.85 / 4)
         )
@@ -41,7 +47,8 @@ struct CalculatorView_Previews: PreviewProvider {
 }
 
 struct CalculatorButtonPad: View {
-  @Binding var brain: CalculatorBrain
+//  @Binding var brain: CalculatorBrain
+  var model: CalculatorModel
   let pad: [[CalculatorButtonItem]] = [
     [.command(.clear), .command(.flip), .command(.percent), .op(.divide)],
     [.digit(7), .digit(8), .digit(9), .op(.multiply)],
@@ -54,14 +61,15 @@ struct CalculatorButtonPad: View {
   var body: some View {
     VStack(alignment: .trailing) {
       ForEach(pad, id: \.self) { row in
-        CalculatorButtonRow(brain: self.$brain, row: row, size: self.size)
+        CalculatorButtonRow(model: self.model, row: row, size: self.size)
       }
     }
   }
 }
 
 struct CalculatorButtonRow: View {
-  @Binding var brain: CalculatorBrain
+//  @Binding var brain: CalculatorBrain
+  var model: CalculatorModel
   let row: [CalculatorButtonItem]
   let size: CGSize
   
@@ -72,7 +80,8 @@ struct CalculatorButtonRow: View {
           title: item.title,
           size: self.size,
           backgroundColorName: item.backgroundColorName) {
-            self.brain = self.brain.apply(item: item)
+//            self.brain = self.brain.apply(item: item)
+            self.model.apply(item)
             print("Button \(item.title)")
         }
       }
