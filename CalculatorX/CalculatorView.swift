@@ -9,18 +9,18 @@
 import SwiftUI
 
 struct CalculatorView: View {
-  @State private var brain: CalculatorBrain = .left("0")
+  @ObservedObject var model = CalculatorModel()
   
   var body: some View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         Spacer()
-        Text(self.brain.output)
+        Text(self.model.brain.output)
           .font(.system(size: geometry.size.width * 0.85 / 4))
           .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
           .padding(.horizontal)
         CalculatorButtonPad(
-          brain: self.$brain,
+          brain: self.$model.brain,
           size: CGSize(width: geometry.size.width * 0.85 / 4,
                        height: geometry.size.width * 0.85 / 4)
         )
