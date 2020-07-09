@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct CalculatorView: View {
-  @ObservedObject var model = CalculatorModel()
+  @EnvironmentObject var model: CalculatorModel
   @State private var editingHistory = false
   
   var body: some View {
@@ -30,7 +30,6 @@ struct CalculatorView: View {
           .padding(.horizontal)
         
         CalculatorButtonPad(
-          model: self.model,
           size: CGSize(width: geometry.size.width * 0.85 / 4,
                        height: geometry.size.width * 0.85 / 4)
         )
@@ -51,8 +50,6 @@ struct CalculatorView_Previews: PreviewProvider {
 }
 
 struct CalculatorButtonPad: View {
-  //  @Binding var brain: CalculatorBrain
-  var model: CalculatorModel
   let pad: [[CalculatorButtonItem]] = [
     [.command(.clear), .command(.flip), .command(.percent), .op(.divide)],
     [.digit(7), .digit(8), .digit(9), .op(.multiply)],
@@ -65,7 +62,7 @@ struct CalculatorButtonPad: View {
   var body: some View {
     VStack(alignment: .trailing) {
       ForEach(pad, id: \.self) { row in
-        CalculatorButtonRow(model: self.model, row: row, size: self.size)
+        CalculatorButtonRow(row: row, size: self.size)
       }
     }
   }
@@ -73,7 +70,7 @@ struct CalculatorButtonPad: View {
 
 struct CalculatorButtonRow: View {
   //  @Binding var brain: CalculatorBrain
-  var model: CalculatorModel
+  @EnvironmentObject var model: CalculatorModel
   let row: [CalculatorButtonItem]
   let size: CGSize
   
@@ -84,7 +81,6 @@ struct CalculatorButtonRow: View {
           title: item.title,
           size: self.size,
           backgroundColorName: item.backgroundColorName) {
-            //            self.brain = self.brain.apply(item: item)
             self.model.apply(item)
             print("Button \(item.title)")
         }
