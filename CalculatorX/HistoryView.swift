@@ -35,6 +35,10 @@ struct HistoryView: View {
                         .foregroundColor(.secondary)
                         .padding(.top, 1)
                 }
+                .onTapGesture {
+                    let pasteboard = UIPasteboard.general
+                    pasteboard.string = model.brain.output
+                }
 
                 Slider(value: $model.slidingIndex, in: 0...Float(model.totalCount), step: 1)
             }
