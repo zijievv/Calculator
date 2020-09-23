@@ -30,12 +30,12 @@ struct HistoryView: View {
                         Text("\(model.brain.output)")
                     }
 
-                    Text("Tap to copy result")
+                    Text("Press to copy result")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .padding(.top, 1)
                 }
-                .onTapGesture {
+                .onLongPressGesture {
                     let pasteboard = UIPasteboard.general
                     pasteboard.string = model.brain.output
                 }
