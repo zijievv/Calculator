@@ -28,6 +28,10 @@ struct CalculatorView: View {
                     .font(.system(size: geometry.size.width * 0.85 / 4))
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
                     .padding(.horizontal)
+                    .onLongPressGesture {
+                        let pasteboard = UIPasteboard.general
+                        pasteboard.string = model.brain.output
+                    }
 
                 CalculatorButtonPad(
                     size: CGSize(width: geometry.size.width * 0.85 / 4,
