@@ -1,5 +1,5 @@
 //
-//  CalculatorView.swift
+//  CalculatorPanel.swift
 //  CalculatorX
 //
 //  Created by zijie vv on 2020-07-08.
@@ -7,11 +7,15 @@
 //
 //  ================================================================================================
 //
-  
 
 import SwiftUI
+import UIKit
 
 struct CalculatorPanel: View {
+    @EnvironmentObject var model: CalculatorModel
+    @State private var editingHistory = false
+    var temp: String = "1234567890"
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -21,26 +25,37 @@ struct CalculatorPanel: View {
                 VStack(alignment: .center, spacing: 0) {
                     Spacer()
 
-                    HStack {
-                        Text("10")
-                            .font(.system(size: 80, weight: .regular, design: .default))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 32)
-                            .padding(.vertical, 8)
-                    }
-                    .frame(width: geometry.size.width, alignment: .trailing)
+                    Button(action: { editingHistory = true }, label: {
+                        Text("History: \(model.history.count)")
+                    })
+                        .sheet(isPresented: $editingHistory) {
+                            HistoryView(model: model)
+                        }
+
+                    Text(model.brain.output)
+                        .font(.system(size: min(100, 500 / CGFloat(model.brain.output.count)),
+                                      weight: .regular,
+                                      design: .monospaced))
+                        .lineLimit(2)
+                        .allowsTightening(true)
+                        .foregroundColor(.white)
+                        .frame(minWidth: 0, maxWidth: geometry.size.width - 16,
+                               minHeight: 0, maxHeight: 100,
+                               alignment: .bottomTrailing)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
 
                     CalculatorButtonPad(size: buttonSize(with: geometry))
                 }
                 .frame(width: geometry.size.width,
                        height: geometry.size.height,
-                   alignment: .center)
+                       alignment: .center)
             }
         }
     }
 
     private func buttonSize(with geometry: GeometryProxy) -> CGSize {
-        let side = (geometry.size.width - 16  * 5) / 4
+        let side = (geometry.size.width - 16 * 5) / 4
         return CGSize(width: side, height: side)
     }
 }
@@ -64,14 +79,13 @@ struct CalculatorButtonPad: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 16) {
             ForEach(pad, id: \.self) { row in
-                CalculatorButtonRow(row: row, size: self.size)
+                CalculatorButtonRow(row: row, size: size)
             }
         }
     }
 }
 
 struct CalculatorButtonRow: View {
-    //  @Binding var brain: CalculatorBrain
     @EnvironmentObject var model: CalculatorModel
     let row: [CalculatorButtonItem]
     let size: CGSize
@@ -80,11 +94,11 @@ struct CalculatorButtonRow: View {
         HStack(spacing: 16) {
             ForEach(row, id: \.self) { item in
                 CalculatorButton(
-                    title: item.title,
-                    size: self.size,
+                    item: item,
+                    size: size,
                     backgroundColorName: item.backgroundColorName
                 ) {
-                    self.model.apply(item)
+                    model.apply(item)
                     print("Button \(item.title)")
                 }
             }
@@ -93,7 +107,7 @@ struct CalculatorButtonRow: View {
 }
 
 struct CalculatorButton: View {
-    let title: String
+    let item: CalculatorButtonItem
     let size: CGSize
     let backgroundColorName: String
     let action: () -> Void
@@ -102,12 +116,23 @@ struct CalculatorButton: View {
         Button(action: action) {
             ZStack {
                 RoundedRectangle(cornerRadius: size.width / 2, style: .circular)
-                    .frame(width: title != "0" ? size.width : size.width * 2 + 16, height: size.height)
+                    .frame(width: !isZero ? size.width : size.width * 2 + 16, height: size.height)
                     .foregroundColor(Color(backgroundColorName))
-                Text(title)
-                    .font(.largeTitle)
-                    .foregroundColor(.white)
+
+                Group {
+                    Text(item.text)
+                    Image(systemName: item.imageName)
+                }
+                .font(.system(.largeTitle, design: .rounded))
+                .foregroundColor(.white)
             }
+        }
+    }
+
+    var isZero: Bool {
+        switch item {
+        case let .digit(value): return value == 0
+        default: return false
         }
     }
 }

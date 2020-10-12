@@ -7,7 +7,6 @@
 //
 //  ================================================================================================
 //
-  
 
 import SwiftUI
 
@@ -16,6 +15,7 @@ struct CalculatorXApp: App {
     var body: some Scene {
         WindowGroup {
             CalculatorPanel()
+                .environmentObject(CalculatorModel())
         }
     }
 }
