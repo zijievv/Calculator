@@ -8,7 +8,11 @@
 //  ================================================================================================
 //
 
-import SwiftUI
+protocol CalculatorButtonItemProtocol {
+    var imageName: String { get }
+    var text: String { get }
+    var usingTextSymbol: Bool { get }
+}
 
 enum CalculatorButtonItem {
     enum Op: String {
@@ -27,12 +31,20 @@ enum CalculatorButtonItem {
     case command(Command)
 }
 
-extension CalculatorButtonItem.Op {
+extension CalculatorButtonItem.Op: CalculatorButtonItemProtocol {
+    var usingTextSymbol: Bool { false }
     var imageName: String { self.rawValue }
     var text: String { "" }
 }
 
-extension CalculatorButtonItem.Command {
+extension CalculatorButtonItem.Command: CalculatorButtonItemProtocol {
+    var usingTextSymbol: Bool {
+        switch self {
+        case .clear: return true
+        default: return false
+        }
+    }
+
     var imageName: String {
         switch self {
         case .clear: return ""
@@ -44,6 +56,33 @@ extension CalculatorButtonItem.Command {
         switch self {
         case .clear: return rawValue
         default: return ""
+        }
+    }
+}
+
+extension CalculatorButtonItem: CalculatorButtonItemProtocol {
+    var usingTextSymbol: Bool {
+        switch self {
+        case .digit(_), .dot: return true
+        case let .command(cmd): return cmd.usingTextSymbol
+        case let .op(op): return op.usingTextSymbol
+        }
+    }
+
+    var imageName: String {
+        switch self {
+        case .dot, .digit(_): return ""
+        case let .command(cmd): return cmd.imageName
+        case let .op(op): return op.imageName
+        }
+    }
+
+    var text: String {
+        switch self {
+        case let .digit(value): return String(value)
+        case .dot: return "."
+        case let .command(cmd): return cmd.text
+        case let .op(op): return op.text
         }
     }
 }
@@ -69,23 +108,6 @@ extension CalculatorButtonItem {
             case .flip: return "<Flip>"
             case .percent: return "%"
             }
-        }
-    }
-
-    var imageName: String {
-        switch self {
-        case .dot, .digit(_): return ""
-        case let .command(cmd): return cmd.imageName
-        case let .op(op): return op.imageName
-        }
-    }
-
-    var text: String {
-        switch self {
-        case let .digit(value): return String(value)
-        case .dot: return "."
-        case let .command(cmd): return cmd.text
-        case let .op(op): return op.text
         }
     }
 

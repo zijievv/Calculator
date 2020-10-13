@@ -9,7 +9,6 @@
 //
 
 import Combine
-import Foundation
 
 class CalculatorModel: ObservableObject {
     @Published var brain: CalculatorBrain = .left("0")

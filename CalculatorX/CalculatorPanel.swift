@@ -9,7 +9,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 struct CalculatorPanel: View {
     @EnvironmentObject var model: CalculatorModel
@@ -120,8 +119,11 @@ struct CalculatorButton: View {
                     .foregroundColor(Color(backgroundColorName))
 
                 Group {
-                    Text(item.text)
-                    Image(systemName: item.imageName)
+                    if item.usingTextSymbol {
+                        Text(item.text)
+                    } else {
+                        Image(systemName: item.imageName)
+                    }
                 }
                 .font(.system(.largeTitle, design: .rounded))
                 .foregroundColor(.white)
