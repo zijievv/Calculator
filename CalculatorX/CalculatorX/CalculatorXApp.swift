@@ -2,8 +2,8 @@
 //  CalculatorXApp.swift
 //  CalculatorX
 //
-//  Created by zijie vv on 12/10/2020.
-//  Copyright © 2020 zijie vv. All rights reserved.
+//  Created by zijie vv on 23/6/21.
+//  Copyright © 2021 zijie vv. All rights reserved.
 //
 //  ================================================================================================
 //
